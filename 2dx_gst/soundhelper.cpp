@@ -15,8 +15,8 @@
 #define MAX_WAV_BUF_SIZE 250 * 1024 * 1024 // 250MB of wave size
 #define MAX_WAV_COUNT 4096
 
-static uint32_t addr_wavs[MAX_WAV_COUNT] = { 0 };
-static int32_t size_wavs[MAX_WAV_COUNT] = { 0 };
+static void* addr_wavs[MAX_WAV_COUNT] = { 0 };
+static size_t size_wavs[MAX_WAV_COUNT] = { 0 };
 static uint8_t channels_wavs[MAX_WAV_COUNT] = { 0 };
 static unsigned char *buf_wavs = NULL;
 static int total_wavs = 0, curr_pos = 0;
@@ -89,7 +89,7 @@ static int snd_read(int id, void *buffer, int size_buffer, E_READ_TYPE type)
 		(double)((curr_pos * 100.0) / (MAX_WAV_BUF_SIZE * 1.0))
 		);
 
-	addr_wavs[id] = (uint32_t)(buf_wavs + curr_pos);
+	addr_wavs[id] = (void*)(buf_wavs + curr_pos);
 	switch (type)
 	{
 	case ENUM_TYPE_WMA:
@@ -121,9 +121,9 @@ static int msadpcm_read_callback(int id, void *buffer, int size_buffer)
 int query_sound_from_buffer(int id, wave_info *info)
 {
 	if (id > total_wavs) return -1;
-	info->addr = (void*)addr_wavs[id];
+	info->addr = addr_wavs[id];
 	info->size = size_wavs[id];
-	//	printf("get: key[%04d]: start %p, size %d\n", id, addr_wavs[id], size_wavs[id]);
+	// _logm("get: key[%04d]: start %p, size %u\n", id, addr_wavs[id], size_wavs[id]);
 	return 1;
 }
 
@@ -135,8 +135,8 @@ int clear_sound_buffer(void)
 {
 	total_wavs = 0;
 	curr_pos = 0;
-	memset(addr_wavs, 0, MAX_WAV_COUNT * sizeof(uint32_t));
-	memset(size_wavs, -1, MAX_WAV_COUNT * sizeof(int32_t));
+	memset(addr_wavs, 0, MAX_WAV_COUNT * sizeof(void*));
+	memset(size_wavs, -1, MAX_WAV_COUNT * sizeof(size_t));
 
 	return 1;
 }

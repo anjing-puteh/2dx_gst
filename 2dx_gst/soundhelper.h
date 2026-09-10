@@ -3,7 +3,7 @@
 
 struct wave_info
 {
-	uint32_t size;
+	size_t size;
 	void *addr;
 };
 

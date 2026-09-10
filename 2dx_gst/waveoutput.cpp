@@ -111,13 +111,16 @@ int32_t mix_bgm(uint8_t *output_buf, int32_t size_output_buf, char *keysound_pre
 #else
 int32_t mix_bgm(uint8_t *output_buf, int32_t size_output_buf, char *keysound_prefix, int16_t keysound_id, int32_t time)
 {
-	//	printf("\tadding keysound %08d at %08d\n", keysound_id, time);
+	//  printf("\tadding keysound %4d at %8d\n", keysound_id, time);
 	//	printf("\t%08d\t%08d\n", time, keysound_id);
 	if (keysound_id == 0)
 		return size_output_buf;
 
 	wave_info info;
-	query_sound_from_buffer(keysound_id - 1, &info);
+	if (query_sound_from_buffer(keysound_id - 1, &info) != 1) {
+		_logw("Failed to mix key %d", keysound_id);
+		return size_output_buf;
+	}
 	uint8_t ch = query_channels_from_buffer(keysound_id - 1);
 
 	int32_t ret = add_wave_to_buffer(output_buf, (uint8_t*)info.addr, info.size, size_output_buf, time, ch);

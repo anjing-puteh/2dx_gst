@@ -24,9 +24,6 @@
     <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="main_old.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="iidxchart.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
